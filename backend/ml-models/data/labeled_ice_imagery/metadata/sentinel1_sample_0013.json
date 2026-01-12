@@ -1,0 +1,11 @@
+{
+  "image_id": "sentinel1_sample_0013",
+  "source": "synthetic",
+  "date": "2026-01-10T23:59:14.164380",
+  "resolution_m": 20,
+  "classes": {
+    "0": "open_water",
+    "1": "thin_ice",
+    "2": "thick_ice"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "train": {
+    "split": "train",
+    "num_samples": 70,
+    "class_weights": {
+      "0": 2.007843137254902,
+      "1": 1.003921568627451,
+      "2": 0.6640726329442282
+    },
+    "augmented": true
+  },
+  "val": {
+    "split": "val",
+    "num_samples": 15,
+    "class_weights": {
+      "0": 2.007843137254902,
+      "1": 1.003921568627451,
+      "2": 0.6640726329442282
+    },
+    "augmented": false
+  },
+  "test": {
+    "split": "test",
+    "num_samples": 15,
+    "class_weights": {
+      "0": 2.007843137254902,
+      "1": 1.003921568627451,
+      "2": 0.6640726329442282
+    },
+    "augmented": false
+  },
+  "num_sequences": 3,
+  "sequence_length": 30
+}

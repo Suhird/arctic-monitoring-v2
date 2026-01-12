@@ -1,0 +1,531 @@
+{
+  "dataset_name": "Arctic Ice Training Data",
+  "created": "2026-01-10T23:59:21.303685",
+  "num_samples": 100,
+  "image_format": "PNG (256x256x3)",
+  "label_format": "NumPy array (256x256)",
+  "classes": [
+    {
+      "id": 0,
+      "name": "open_water",
+      "description": "Open water, no ice"
+    },
+    {
+      "id": 1,
+      "name": "thin_ice",
+      "description": "Thin first-year ice"
+    },
+    {
+      "id": 2,
+      "name": "thick_ice",
+      "description": "Thick multi-year ice"
+    },
+    {
+      "id": 3,
+      "name": "pack_ice",
+      "description": "Pack ice"
+    }
+  ],
+  "samples": [
+    {
+      "image": "sentinel1_sample_0000.png",
+      "label": "sentinel1_sample_0000_label.npy",
+      "metadata": "sentinel1_sample_0000.json"
+    },
+    {
+      "image": "sentinel1_sample_0001.png",
+      "label": "sentinel1_sample_0001_label.npy",
+      "metadata": "sentinel1_sample_0001.json"
+    },
+    {
+      "image": "sentinel1_sample_0002.png",
+      "label": "sentinel1_sample_0002_label.npy",
+      "metadata": "sentinel1_sample_0002.json"
+    },
+    {
+      "image": "sentinel1_sample_0003.png",
+      "label": "sentinel1_sample_0003_label.npy",
+      "metadata": "sentinel1_sample_0003.json"
+    },
+    {
+      "image": "sentinel1_sample_0004.png",
+      "label": "sentinel1_sample_0004_label.npy",
+      "metadata": "sentinel1_sample_0004.json"
+    },
+    {
+      "image": "sentinel1_sample_0005.png",
+      "label": "sentinel1_sample_0005_label.npy",
+      "metadata": "sentinel1_sample_0005.json"
+    },
+    {
+      "image": "sentinel1_sample_0006.png",
+      "label": "sentinel1_sample_0006_label.npy",
+      "metadata": "sentinel1_sample_0006.json"
+    },
+    {
+      "image": "sentinel1_sample_0007.png",
+      "label": "sentinel1_sample_0007_label.npy",
+      "metadata": "sentinel1_sample_0007.json"
+    },
+    {
+      "image": "sentinel1_sample_0008.png",
+      "label": "sentinel1_sample_0008_label.npy",
+      "metadata": "sentinel1_sample_0008.json"
+    },
+    {
+      "image": "sentinel1_sample_0009.png",
+      "label": "sentinel1_sample_0009_label.npy",
+      "metadata": "sentinel1_sample_0009.json"
+    },
+    {
+      "image": "sentinel1_sample_0010.png",
+      "label": "sentinel1_sample_0010_label.npy",
+      "metadata": "sentinel1_sample_0010.json"
+    },
+    {
+      "image": "sentinel1_sample_0011.png",
+      "label": "sentinel1_sample_0011_label.npy",
+      "metadata": "sentinel1_sample_0011.json"
+    },
+    {
+      "image": "sentinel1_sample_0012.png",
+      "label": "sentinel1_sample_0012_label.npy",
+      "metadata": "sentinel1_sample_0012.json"
+    },
+    {
+      "image": "sentinel1_sample_0013.png",
+      "label": "sentinel1_sample_0013_label.npy",
+      "metadata": "sentinel1_sample_0013.json"
+    },
+    {
+      "image": "sentinel1_sample_0014.png",
+      "label": "sentinel1_sample_0014_label.npy",
+      "metadata": "sentinel1_sample_0014.json"
+    },
+    {
+      "image": "sentinel1_sample_0015.png",
+      "label": "sentinel1_sample_0015_label.npy",
+      "metadata": "sentinel1_sample_0015.json"
+    },
+    {
+      "image": "sentinel1_sample_0016.png",
+      "label": "sentinel1_sample_0016_label.npy",
+      "metadata": "sentinel1_sample_0016.json"
+    },
+    {
+      "image": "sentinel1_sample_0017.png",
+      "label": "sentinel1_sample_0017_label.npy",
+      "metadata": "sentinel1_sample_0017.json"
+    },
+    {
+      "image": "sentinel1_sample_0018.png",
+      "label": "sentinel1_sample_0018_label.npy",
+      "metadata": "sentinel1_sample_0018.json"
+    },
+    {
+      "image": "sentinel1_sample_0019.png",
+      "label": "sentinel1_sample_0019_label.npy",
+      "metadata": "sentinel1_sample_0019.json"
+    },
+    {
+      "image": "sentinel1_sample_0020.png",
+      "label": "sentinel1_sample_0020_label.npy",
+      "metadata": "sentinel1_sample_0020.json"
+    },
+    {
+      "image": "sentinel1_sample_0021.png",
+      "label": "sentinel1_sample_0021_label.npy",
+      "metadata": "sentinel1_sample_0021.json"
+    },
+    {
+      "image": "sentinel1_sample_0022.png",
+      "label": "sentinel1_sample_0022_label.npy",
+      "metadata": "sentinel1_sample_0022.json"
+    },
+    {
+      "image": "sentinel1_sample_0023.png",
+      "label": "sentinel1_sample_0023_label.npy",
+      "metadata": "sentinel1_sample_0023.json"
+    },
+    {
+      "image": "sentinel1_sample_0024.png",
+      "label": "sentinel1_sample_0024_label.npy",
+      "metadata": "sentinel1_sample_0024.json"
+    },
+    {
+      "image": "sentinel1_sample_0025.png",
+      "label": "sentinel1_sample_0025_label.npy",
+      "metadata": "sentinel1_sample_0025.json"
+    },
+    {
+      "image": "sentinel1_sample_0026.png",
+      "label": "sentinel1_sample_0026_label.npy",
+      "metadata": "sentinel1_sample_0026.json"
+    },
+    {
+      "image": "sentinel1_sample_0027.png",
+      "label": "sentinel1_sample_0027_label.npy",
+      "metadata": "sentinel1_sample_0027.json"
+    },
+    {
+      "image": "sentinel1_sample_0028.png",
+      "label": "sentinel1_sample_0028_label.npy",
+      "metadata": "sentinel1_sample_0028.json"
+    },
+    {
+      "image": "sentinel1_sample_0029.png",
+      "label": "sentinel1_sample_0029_label.npy",
+      "metadata": "sentinel1_sample_0029.json"
+    },
+    {
+      "image": "sentinel1_sample_0030.png",
+      "label": "sentinel1_sample_0030_label.npy",
+      "metadata": "sentinel1_sample_0030.json"
+    },
+    {
+      "image": "sentinel1_sample_0031.png",
+      "label": "sentinel1_sample_0031_label.npy",
+      "metadata": "sentinel1_sample_0031.json"
+    },
+    {
+      "image": "sentinel1_sample_0032.png",
+      "label": "sentinel1_sample_0032_label.npy",
+      "metadata": "sentinel1_sample_0032.json"
+    },
+    {
+      "image": "sentinel1_sample_0033.png",
+      "label": "sentinel1_sample_0033_label.npy",
+      "metadata": "sentinel1_sample_0033.json"
+    },
+    {
+      "image": "sentinel1_sample_0034.png",
+      "label": "sentinel1_sample_0034_label.npy",
+      "metadata": "sentinel1_sample_0034.json"
+    },
+    {
+      "image": "sentinel1_sample_0035.png",
+      "label": "sentinel1_sample_0035_label.npy",
+      "metadata": "sentinel1_sample_0035.json"
+    },
+    {
+      "image": "sentinel1_sample_0036.png",
+      "label": "sentinel1_sample_0036_label.npy",
+      "metadata": "sentinel1_sample_0036.json"
+    },
+    {
+      "image": "sentinel1_sample_0037.png",
+      "label": "sentinel1_sample_0037_label.npy",
+      "metadata": "sentinel1_sample_0037.json"
+    },
+    {
+      "image": "sentinel1_sample_0038.png",
+      "label": "sentinel1_sample_0038_label.npy",
+      "metadata": "sentinel1_sample_0038.json"
+    },
+    {
+      "image": "sentinel1_sample_0039.png",
+      "label": "sentinel1_sample_0039_label.npy",
+      "metadata": "sentinel1_sample_0039.json"
+    },
+    {
+      "image": "sentinel1_sample_0040.png",
+      "label": "sentinel1_sample_0040_label.npy",
+      "metadata": "sentinel1_sample_0040.json"
+    },
+    {
+      "image": "sentinel1_sample_0041.png",
+      "label": "sentinel1_sample_0041_label.npy",
+      "metadata": "sentinel1_sample_0041.json"
+    },
+    {
+      "image": "sentinel1_sample_0042.png",
+      "label": "sentinel1_sample_0042_label.npy",
+      "metadata": "sentinel1_sample_0042.json"
+    },
+    {
+      "image": "sentinel1_sample_0043.png",
+      "label": "sentinel1_sample_0043_label.npy",
+      "metadata": "sentinel1_sample_0043.json"
+    },
+    {
+      "image": "sentinel1_sample_0044.png",
+      "label": "sentinel1_sample_0044_label.npy",
+      "metadata": "sentinel1_sample_0044.json"
+    },
+    {
+      "image": "sentinel1_sample_0045.png",
+      "label": "sentinel1_sample_0045_label.npy",
+      "metadata": "sentinel1_sample_0045.json"
+    },
+    {
+      "image": "sentinel1_sample_0046.png",
+      "label": "sentinel1_sample_0046_label.npy",
+      "metadata": "sentinel1_sample_0046.json"
+    },
+    {
+      "image": "sentinel1_sample_0047.png",
+      "label": "sentinel1_sample_0047_label.npy",
+      "metadata": "sentinel1_sample_0047.json"
+    },
+    {
+      "image": "sentinel1_sample_0048.png",
+      "label": "sentinel1_sample_0048_label.npy",
+      "metadata": "sentinel1_sample_0048.json"
+    },
+    {
+      "image": "sentinel1_sample_0049.png",
+      "label": "sentinel1_sample_0049_label.npy",
+      "metadata": "sentinel1_sample_0049.json"
+    },
+    {
+      "image": "sentinel1_sample_0050.png",
+      "label": "sentinel1_sample_0050_label.npy",
+      "metadata": "sentinel1_sample_0050.json"
+    },
+    {
+      "image": "sentinel1_sample_0051.png",
+      "label": "sentinel1_sample_0051_label.npy",
+      "metadata": "sentinel1_sample_0051.json"
+    },
+    {
+      "image": "sentinel1_sample_0052.png",
+      "label": "sentinel1_sample_0052_label.npy",
+      "metadata": "sentinel1_sample_0052.json"
+    },
+    {
+      "image": "sentinel1_sample_0053.png",
+      "label": "sentinel1_sample_0053_label.npy",
+      "metadata": "sentinel1_sample_0053.json"
+    },
+    {
+      "image": "sentinel1_sample_0054.png",
+      "label": "sentinel1_sample_0054_label.npy",
+      "metadata": "sentinel1_sample_0054.json"
+    },
+    {
+      "image": "sentinel1_sample_0055.png",
+      "label": "sentinel1_sample_0055_label.npy",
+      "metadata": "sentinel1_sample_0055.json"
+    },
+    {
+      "image": "sentinel1_sample_0056.png",
+      "label": "sentinel1_sample_0056_label.npy",
+      "metadata": "sentinel1_sample_0056.json"
+    },
+    {
+      "image": "sentinel1_sample_0057.png",
+      "label": "sentinel1_sample_0057_label.npy",
+      "metadata": "sentinel1_sample_0057.json"
+    },
+    {
+      "image": "sentinel1_sample_0058.png",
+      "label": "sentinel1_sample_0058_label.npy",
+      "metadata": "sentinel1_sample_0058.json"
+    },
+    {
+      "image": "sentinel1_sample_0059.png",
+      "label": "sentinel1_sample_0059_label.npy",
+      "metadata": "sentinel1_sample_0059.json"
+    },
+    {
+      "image": "sentinel1_sample_0060.png",
+      "label": "sentinel1_sample_0060_label.npy",
+      "metadata": "sentinel1_sample_0060.json"
+    },
+    {
+      "image": "sentinel1_sample_0061.png",
+      "label": "sentinel1_sample_0061_label.npy",
+      "metadata": "sentinel1_sample_0061.json"
+    },
+    {
+      "image": "sentinel1_sample_0062.png",
+      "label": "sentinel1_sample_0062_label.npy",
+      "metadata": "sentinel1_sample_0062.json"
+    },
+    {
+      "image": "sentinel1_sample_0063.png",
+      "label": "sentinel1_sample_0063_label.npy",
+      "metadata": "sentinel1_sample_0063.json"
+    },
+    {
+      "image": "sentinel1_sample_0064.png",
+      "label": "sentinel1_sample_0064_label.npy",
+      "metadata": "sentinel1_sample_0064.json"
+    },
+    {
+      "image": "sentinel1_sample_0065.png",
+      "label": "sentinel1_sample_0065_label.npy",
+      "metadata": "sentinel1_sample_0065.json"
+    },
+    {
+      "image": "sentinel1_sample_0066.png",
+      "label": "sentinel1_sample_0066_label.npy",
+      "metadata": "sentinel1_sample_0066.json"
+    },
+    {
+      "image": "sentinel1_sample_0067.png",
+      "label": "sentinel1_sample_0067_label.npy",
+      "metadata": "sentinel1_sample_0067.json"
+    },
+    {
+      "image": "sentinel1_sample_0068.png",
+      "label": "sentinel1_sample_0068_label.npy",
+      "metadata": "sentinel1_sample_0068.json"
+    },
+    {
+      "image": "sentinel1_sample_0069.png",
+      "label": "sentinel1_sample_0069_label.npy",
+      "metadata": "sentinel1_sample_0069.json"
+    },
+    {
+      "image": "sentinel1_sample_0070.png",
+      "label": "sentinel1_sample_0070_label.npy",
+      "metadata": "sentinel1_sample_0070.json"
+    },
+    {
+      "image": "sentinel1_sample_0071.png",
+      "label": "sentinel1_sample_0071_label.npy",
+      "metadata": "sentinel1_sample_0071.json"
+    },
+    {
+      "image": "sentinel1_sample_0072.png",
+      "label": "sentinel1_sample_0072_label.npy",
+      "metadata": "sentinel1_sample_0072.json"
+    },
+    {
+      "image": "sentinel1_sample_0073.png",
+      "label": "sentinel1_sample_0073_label.npy",
+      "metadata": "sentinel1_sample_0073.json"
+    },
+    {
+      "image": "sentinel1_sample_0074.png",
+      "label": "sentinel1_sample_0074_label.npy",
+      "metadata": "sentinel1_sample_0074.json"
+    },
+    {
+      "image": "sentinel1_sample_0075.png",
+      "label": "sentinel1_sample_0075_label.npy",
+      "metadata": "sentinel1_sample_0075.json"
+    },
+    {
+      "image": "sentinel1_sample_0076.png",
+      "label": "sentinel1_sample_0076_label.npy",
+      "metadata": "sentinel1_sample_0076.json"
+    },
+    {
+      "image": "sentinel1_sample_0077.png",
+      "label": "sentinel1_sample_0077_label.npy",
+      "metadata": "sentinel1_sample_0077.json"
+    },
+    {
+      "image": "sentinel1_sample_0078.png",
+      "label": "sentinel1_sample_0078_label.npy",
+      "metadata": "sentinel1_sample_0078.json"
+    },
+    {
+      "image": "sentinel1_sample_0079.png",
+      "label": "sentinel1_sample_0079_label.npy",
+      "metadata": "sentinel1_sample_0079.json"
+    },
+    {
+      "image": "sentinel1_sample_0080.png",
+      "label": "sentinel1_sample_0080_label.npy",
+      "metadata": "sentinel1_sample_0080.json"
+    },
+    {
+      "image": "sentinel1_sample_0081.png",
+      "label": "sentinel1_sample_0081_label.npy",
+      "metadata": "sentinel1_sample_0081.json"
+    },
+    {
+      "image": "sentinel1_sample_0082.png",
+      "label": "sentinel1_sample_0082_label.npy",
+      "metadata": "sentinel1_sample_0082.json"
+    },
+    {
+      "image": "sentinel1_sample_0083.png",
+      "label": "sentinel1_sample_0083_label.npy",
+      "metadata": "sentinel1_sample_0083.json"
+    },
+    {
+      "image": "sentinel1_sample_0084.png",
+      "label": "sentinel1_sample_0084_label.npy",
+      "metadata": "sentinel1_sample_0084.json"
+    },
+    {
+      "image": "sentinel1_sample_0085.png",
+      "label": "sentinel1_sample_0085_label.npy",
+      "metadata": "sentinel1_sample_0085.json"
+    },
+    {
+      "image": "sentinel1_sample_0086.png",
+      "label": "sentinel1_sample_0086_label.npy",
+      "metadata": "sentinel1_sample_0086.json"
+    },
+    {
+      "image": "sentinel1_sample_0087.png",
+      "label": "sentinel1_sample_0087_label.npy",
+      "metadata": "sentinel1_sample_0087.json"
+    },
+    {
+      "image": "sentinel1_sample_0088.png",
+      "label": "sentinel1_sample_0088_label.npy",
+      "metadata": "sentinel1_sample_0088.json"
+    },
+    {
+      "image": "sentinel1_sample_0089.png",
+      "label": "sentinel1_sample_0089_label.npy",
+      "metadata": "sentinel1_sample_0089.json"
+    },
+    {
+      "image": "sentinel1_sample_0090.png",
+      "label": "sentinel1_sample_0090_label.npy",
+      "metadata": "sentinel1_sample_0090.json"
+    },
+    {
+      "image": "sentinel1_sample_0091.png",
+      "label": "sentinel1_sample_0091_label.npy",
+      "metadata": "sentinel1_sample_0091.json"
+    },
+    {
+      "image": "sentinel1_sample_0092.png",
+      "label": "sentinel1_sample_0092_label.npy",
+      "metadata": "sentinel1_sample_0092.json"
+    },
+    {
+      "image": "sentinel1_sample_0093.png",
+      "label": "sentinel1_sample_0093_label.npy",
+      "metadata": "sentinel1_sample_0093.json"
+    },
+    {
+      "image": "sentinel1_sample_0094.png",
+      "label": "sentinel1_sample_0094_label.npy",
+      "metadata": "sentinel1_sample_0094.json"
+    },
+    {
+      "image": "sentinel1_sample_0095.png",
+      "label": "sentinel1_sample_0095_label.npy",
+      "metadata": "sentinel1_sample_0095.json"
+    },
+    {
+      "image": "sentinel1_sample_0096.png",
+      "label": "sentinel1_sample_0096_label.npy",
+      "metadata": "sentinel1_sample_0096.json"
+    },
+    {
+      "image": "sentinel1_sample_0097.png",
+      "label": "sentinel1_sample_0097_label.npy",
+      "metadata": "sentinel1_sample_0097.json"
+    },
+    {
+      "image": "sentinel1_sample_0098.png",
+      "label": "sentinel1_sample_0098_label.npy",
+      "metadata": "sentinel1_sample_0098.json"
+    },
+    {
+      "image": "sentinel1_sample_0099.png",
+      "label": "sentinel1_sample_0099_label.npy",
+      "metadata": "sentinel1_sample_0099.json"
+    }
+  ]
+}
