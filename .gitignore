@@ -152,3 +152,10 @@ dump.rdb
 Thumbs.db
 .Spotlight-V100
 .Trashes
+
+# User requested strict ignores
+**/__pycache__/
+**/.env
+**/.env.*
+*.env
+
