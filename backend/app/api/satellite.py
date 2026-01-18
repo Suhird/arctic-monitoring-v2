@@ -105,12 +105,12 @@ async def get_satellite_image(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-from app.database import SessionLocal
-from app.models.tile import SatelliteTile
-from app.utils.tiles import tile_to_bbox, tile_to_mercator_bbox
+from ..database import SessionLocal
+from ..models.tile import SatelliteTile
+from ..utils.tiles import tile_to_bbox, tile_to_mercator_bbox
 import io
 from PIL import Image
-from app.satellite.maxar import get_maxar_fetcher
+from ..satellite.maxar import get_maxar_fetcher
 
 @router.get("/tiles/{z}/{x}/{y}")
 async def get_satellite_tile(

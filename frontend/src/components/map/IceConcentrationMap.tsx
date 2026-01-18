@@ -7,6 +7,9 @@ import { Box, Paper, Typography, CircularProgress, Button, TextField, AppBar, To
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 // @ts-ignore
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN || '';
@@ -32,18 +35,17 @@ export default function IceConcentrationMap() {
   const [currentTab, setCurrentTab] = useState(0); // 0 = Explorer, 1 = Split View
   
   // Map State
-  const [overlayMode, setOverlayMode] = useState(false); // Default to Vector (Stable)
   const [visualStyle, setVisualStyle] = useState<'visual' | 'nic'>('visual');
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  // Generate last 7 days
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    return d.toISOString().split('T')[0];
-  });
+  // Calculate date limits
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() - 1); // Yesterday
+  
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() - 30); // 30 days ago
 
   const getBremenVisualUrl = (dateStr: string) => {
     return `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/proxy/bremen_visual?date=${dateStr}&style=${visualStyle}`;
@@ -86,79 +88,96 @@ export default function IceConcentrationMap() {
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    const sourceId = 'ice-concentration-daily';
-    const imageSourceId = 'ice-image-overlay';
+    const wmsSourceId = 'nasa-gibs-wms';
     
-    const dataUrl = `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/ice/current?min_lon=-180&min_lat=50&max_lon=180&max_lat=90&date=${selectedDate}`;
-    const imageUrl = getBremenVisualUrl(selectedDate);
-
-    // 1. Vector Source
-    if (map.current.getSource(sourceId)) {
-        (map.current.getSource(sourceId) as mapboxgl.GeoJSONSource).setData(dataUrl);
-    } else {
-        map.current.addSource(sourceId, { type: 'geojson', data: dataUrl });
+    // NASA GIBS WMS URL template
+    // Note: We need to handle the BBOX manually or use Mapbox's tile URL standard.
+    // Mapbox sends bbox automatically if we put {bbox-epsg-3857}
+    const wmsUrl = `https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap&LAYERS=GHRSST_L4_GAMSSA_GDS2_Sea_Ice_Concentration&VERSION=1.3.0&FORMAT=image/png&TRANSPARENT=true&WIDTH=256&HEIGHT=256&CRS=EPSG:3857&BBOX={bbox-epsg-3857}&TIME=${selectedDate}`;
+    
+    // 1. NASA GIBS WMS Source (Raster)
+    // We must remove and re-add the source if the URL (Time) changes, 
+    // because Mapbox doesn't support updating tile URLs easily without hacking internals.
+    // Or we can use style.setSourceTileUrl if strictly needed, but removing/adding is safer for React effects.
+    
+    // However, to avoid flickering, we can try to be smart. 
+    // But for now, let's keep it simple: clear old, add new.
+    
+    // If source exists and we selected a specific date, we want to update it.
+    if (map.current.getSource(wmsSourceId)) {
+        // Unfortunately standard Mapbox API doesn't allow changing tile URL easily.
+        // We will remove the layer and source, then re-add.
+        if (map.current.getLayer('ice-wms-layer')) map.current.removeLayer('ice-wms-layer');
+        map.current.removeSource(wmsSourceId);
     }
 
-    // 2. Image Source
-    if (map.current.getSource(imageSourceId)) {
-        (map.current.getSource(imageSourceId) as mapboxgl.ImageSource).updateImage({ url: imageUrl, coordinates: BREMEN_COORDINATES });
-    } else {
-        map.current.addSource(imageSourceId, {
-            type: 'image',
-            url: imageUrl,
-            coordinates: BREMEN_COORDINATES
+    map.current.addSource(wmsSourceId, {
+        type: 'raster',
+        tiles: [wmsUrl],
+        tileSize: 256,
+        attribution: 'NASA EOSDIS GIBS - GHRSST'
+    });
+
+    // 2. Polar Cap Mask (Hides Mercator Artifacts > 85N)
+    const polarCapSourceId = 'polar-cap';
+    if (!map.current.getSource(polarCapSourceId)) {
+        // Generate a circle polygon for the pole
+        const coordinates = [];
+        for (let i = -180; i <= 180; i += 10) {
+            coordinates.push([i, 85.0]); // Cutoff latitude
+        }
+        
+        const geojson = {
+            type: 'Feature',
+            geometry: {
+                type: 'Polygon',
+                coordinates: [coordinates]
+            }
+        };
+
+        map.current.addSource(polarCapSourceId, {
+            type: 'geojson',
+            data: geojson as any
+        });
+
+        map.current.addLayer({
+            id: 'polar-cap-layer',
+            type: 'fill',
+            source: polarCapSourceId,
+            paint: {
+                'fill-color': '#ffffff', // White cap
+                'fill-opacity': 1.0
+            }
         });
     }
 
-    // Layer Management
-    const heatmapId = 'ice-heatmap';
-    const rasterId = 'ice-raster-layer';
 
-    if (overlayMode) {
-        if (map.current.getLayer(heatmapId)) map.current.setLayoutProperty(heatmapId, 'visibility', 'none');
-        
-        if (!map.current.getLayer(rasterId)) {
-            map.current.addLayer({
-                id: rasterId,
-                type: 'raster',
-                source: imageSourceId,
-                paint: { 'raster-opacity': 0.8, 'raster-fade-duration': 0 }
-            });
-        } else {
-            map.current.setLayoutProperty(rasterId, 'visibility', 'visible');
-        }
+    // Layer Management (Restored)
+    const wmsLayerId = 'ice-wms-layer';
+
+    // Explorer Mode: Show NASA GIBS WMS
+    // 1. WMS Layer
+    if (!map.current.getLayer(wmsLayerId)) {
+        map.current.addLayer({
+            id: wmsLayerId,
+            type: 'raster',
+            source: wmsSourceId,
+            paint: {
+                'raster-opacity': 0.8,
+                'raster-fade-duration': 0,
+                // Color Correction: Shift Hue from Red (0) to Cyan/Blue (185)
+                // This makes the map look like ice (Blue/Cyan) instead of Heat (Red/Orange)
+                'raster-hue-rotate': 185 
+            }
+        });
     } else {
-        if (map.current.getLayer(rasterId)) map.current.setLayoutProperty(rasterId, 'visibility', 'none');
-        
-        if (!map.current.getLayer(heatmapId)) {
-            map.current.addLayer({
-                id: heatmapId,
-                type: 'heatmap',
-                source: sourceId,
-                maxzoom: 9, 
-                paint: {
-                    'heatmap-weight': ['interpolate', ['linear'], ['get', 'concentration'], 0, 0, 100, 1],
-                    'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 1, 9, 3],
-                    'heatmap-color': [
-                        'interpolate', ['linear'], ['heatmap-density'],
-                        0, 'rgba(0,0,255,0)',
-                        0.2, 'rgba(0,0,255, 0.5)',
-                        0.5, 'rgba(0,255,255, 0.6)',
-                        1.0, 'rgba(255,255,255, 0.9)'
-                    ],
-                    'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
-                    'heatmap-opacity': 0.8
-                }
-            });
-        } else {
-             map.current.setLayoutProperty(heatmapId, 'visibility', 'visible');
-        }
+            map.current.setLayoutProperty(wmsLayerId, 'visibility', 'visible');
     }
     
     // Resize map when sidebar/tabs change to ensure it fills container
     map.current.resize();
 
-  }, [selectedDate, mapLoaded, overlayMode, visualStyle, sidebarOpen, currentTab]);
+  }, [selectedDate, mapLoaded, visualStyle, sidebarOpen, currentTab]);
 
   // Auto-align Map in Split View
   useEffect(() => {
@@ -221,18 +240,30 @@ export default function IceConcentrationMap() {
              <Box sx={{ p: 2, overflowY: 'auto', flex: 1 }}>
                  {/* Date Picker */}
                  <Typography variant="caption" fontWeight="bold" gutterBottom sx={{ color: 'black' }}>DATE SELECTION</Typography>
-                 <Box sx={{ display: 'grid', gap: 1, mb: 3 }}>
-                    {last7Days.map(date => (
-                        <Button
-                            key={date}
-                            variant={selectedDate === date ? "contained" : "outlined"}
-                            size="small"
-                            onClick={() => setSelectedDate(date)}
-                            sx={{ justifyContent: 'flex-start' }}
-                        >
-                            {date}
-                        </Button>
-                    ))}
+                 <Box sx={{ mb: 3 }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns as any}>
+                        <DateCalendar 
+                            value={new Date(selectedDate)}
+                            onChange={(newValue: Date | null) => {
+                                if (newValue) {
+                                    // Adjust for timezone offset to ensure correct string representation
+                                    // Or simply use YYYY-MM-DD from the date object
+                                    const offset = newValue.getTimezoneOffset();
+                                    const adjustedDate = new Date(newValue.getTime() - (offset*60*1000));
+                                    setSelectedDate(adjustedDate.toISOString().split('T')[0]);
+                                }
+                            }}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            views={['day', 'month']}
+                            sx={{
+                                width: '100%',
+                                '& .MuiPickersDay-root.Mui-selected': {
+                                    backgroundColor: 'primary.main',
+                                }
+                            }}
+                        />
+                    </LocalizationProvider>
                  </Box>
 
                  {/* Image Style - Always visible for Split View Reference */}
@@ -257,19 +288,6 @@ export default function IceConcentrationMap() {
                         NIC (Chart)
                     </Button>
                  </Box>
-
-                 {/* Layer Settings */}
-                 <Typography variant="caption" fontWeight="bold" gutterBottom sx={{ display: 'block', mb: 1, pl: 1, color: '#000000' }}>MAP LAYERS</Typography>
-                 <Button 
-                    variant={overlayMode ? "contained" : "outlined"} 
-                    color="primary"
-                    fullWidth
-                    size="small"
-                    onClick={() => setOverlayMode(!overlayMode)}
-                    sx={{ mb: 1, textAlign: 'left', justifyContent: 'flex-start' }}
-                >
-                    {overlayMode ? "Image Overlay (Active)" : "Vector Heatmap (Active)"}
-                </Button>
              </Box>
         </Paper>
 
@@ -324,7 +342,7 @@ export default function IceConcentrationMap() {
                         style={{ maxWidth: '100%', maxHeight: '90%', objectFit: 'contain' }}
                     />
                      <Box sx={{ position: 'absolute', top: 10, left: 10, bgcolor: 'rgba(255,255,255,0.9)', p: 0.5, px: 1, borderRadius: 1 }}>
-                        <Typography variant="caption" fontWeight="bold" color="black">Reference: {visualStyle.toUpperCase()}</Typography>
+                        <Typography variant="caption" fontWeight="bold" color="black">Source: University of Bremen ({visualStyle.toUpperCase()})</Typography>
                     </Box>
                 </Box>
             )}

@@ -1,7 +1,7 @@
 
 from sqlalchemy import Column, Integer, String, DateTime, LargeBinary, Index
 from datetime import datetime
-from app.database import Base
+from ..database import Base
 
 class SatelliteTile(Base):
     __tablename__ = "satellite_tiles"

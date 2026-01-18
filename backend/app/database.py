@@ -47,7 +47,7 @@ def init_db():
         conn.commit()
 
     # Import all models to register them
-    from app.models import (
+    from .models import (
         user, 
         ice_data, 
         prediction, 

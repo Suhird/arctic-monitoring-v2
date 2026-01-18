@@ -260,25 +260,50 @@ export default function PermafrostMap() {
       {!loading && !error && (
         <>
           {/* Info Panel */}
-          <Paper sx={{ position: 'absolute', top: 16, right: 16, p: 2, minWidth: 320, maxWidth: 400, maxHeight: '80vh', overflow: 'auto', bgcolor: 'rgba(19, 47, 76, 0.95)', zIndex: 999 }}>
-            <Typography variant="h6" gutterBottom color="primary">
+          <Paper sx={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            p: 2,
+            minWidth: 320,
+            maxWidth: 400,
+            maxHeight: '80vh',
+            overflow: 'auto',
+            zIndex: 999,
+            // Glassmorphism & Gradient Border
+            bgcolor: 'rgba(2, 6, 23, 0.9)',
+            color: '#ffffff',
+            border: '1px solid transparent',
+            backgroundImage: 'linear-gradient(rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.9)), linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)',
+            backgroundOrigin: 'border-box',
+            backgroundClip: 'padding-box, border-box',
+            boxShadow: '0 0 20px rgba(0, 198, 255, 0.3)',
+            backdropFilter: 'blur(10px)',
+          }}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#00C6FF', fontWeight: 'bold' }}>
               Permafrost Monitoring
             </Typography>
-            <Typography variant="body2" sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 2, color: 'rgba(255, 255, 255, 0.7)' }}>
               <strong>Monitoring Stations:</strong> {locationGroups.length}
             </Typography>
 
             {selectedGroup && (
-              <Box sx={{ mb: 2, p: 2, bgcolor: 'rgba(33, 150, 243, 0.1)', borderRadius: 1 }}>
-                <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+              <Box sx={{
+                mb: 2,
+                p: 2,
+                bgcolor: 'rgba(0, 198, 255, 0.1)',
+                borderRadius: 1,
+                border: '1px solid rgba(0, 198, 255, 0.2)'
+              }}>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom sx={{ color: '#fff' }}>
                   {selectedGroup.region}
                 </Typography>
                 <TableContainer>
                   <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Depth</TableCell>
-                        <TableCell>Temp (°C)</TableCell>
+                        <TableCell sx={{ color: 'rgba(255, 255, 255, 0.7)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Depth</TableCell>
+                        <TableCell sx={{ color: 'rgba(255, 255, 255, 0.7)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Temp (°C)</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -286,8 +311,8 @@ export default function PermafrostMap() {
                         .sort((a, b) => a.depth_meters - b.depth_meters)
                         .map((m, idx) => (
                           <TableRow key={idx}>
-                            <TableCell>{m.depth_meters}m</TableCell>
-                            <TableCell>
+                            <TableCell sx={{ color: '#fff', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{m.depth_meters}m</TableCell>
+                            <TableCell sx={{ color: '#fff', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: getTempColor(m.temperature_celsius) }} />
                                 {m.temperature_celsius.toFixed(1)}
@@ -301,34 +326,34 @@ export default function PermafrostMap() {
               </Box>
             )}
 
-            <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                <strong>Temperature Status:</strong>
+            <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <Typography variant="caption" sx={{ display: 'block', mb: 1, color: 'rgba(255, 255, 255, 0.7)', fontWeight: 'bold' }}>
+                Temperature Status:
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#2196f3' }} />
-                <Typography variant="caption">&lt; -4°C (Stable)</Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>&lt; -4°C (Stable)</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#64b5f6' }} />
-                <Typography variant="caption">-4 to -3°C (Cool)</Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>-4 to -3°C (Cool)</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ffeb3b' }} />
-                <Typography variant="caption">-3 to -2°C (Moderate)</Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>-3 to -2°C (Moderate)</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ff9800' }} />
-                <Typography variant="caption">-2 to -1°C (Warning)</Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>-2 to -1°C (Warning)</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ff5252' }} />
-                <Typography variant="caption">&gt; -1°C (Critical)</Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>&gt; -1°C (Critical)</Typography>
               </Box>
             </Box>
 
-            <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-              <Typography variant="caption" color="text.secondary">
+            <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
                 Click on monitoring stations to view depth-temperature profiles
               </Typography>
             </Box>

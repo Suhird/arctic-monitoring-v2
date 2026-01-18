@@ -19,152 +19,152 @@ router = APIRouter(prefix="/api/v1/ice", tags=["ice-concentration"])
 logger = logging.getLogger(__name__)
 
 
-    # Initialize Clients (Sentinel is loaded lazily to avoid circular imports if possible)
-    # nsidc_client removed as per deprecation plan
+# Initialize Clients (Sentinel is loaded lazily to avoid circular imports if possible)
+# nsidc_client removed as per deprecation plan
 
-    @router.get("/current", response_model=IceConcentrationResponse)
-    def get_current_ice_data(
-        min_lon: float = Query(..., ge=-180, le=180),
-        min_lat: float = Query(..., ge=-90, le=90),
-        max_lon: float = Query(..., ge=-180, le=180),
-        max_lat: float = Query(..., ge=-90, le=90),
-        source: Optional[str] = Query(None, description="Satellite source (sentinel1, radarsat)"),
-        date: Optional[str] = Query(None, description="Target date (YYYY-MM-DD)"),
-        db: Session = Depends(get_db)
-    ):
-        """
-        Get current ice concentration data for a bounding box
-        Cached for 5 minutes
-        """
-        bbox = (min_lon, min_lat, max_lon, max_lat)
-        
-        # Parse date
-        target_date_obj = None
-        if date:
-            try:
-                target_date_obj = datetime.strptime(date, "%Y-%m-%d").date()
-            except ValueError:
-                pass # Use latest if invalid
-
-        result = ice_analysis.get_current_ice_concentration(
-            db, 
-            bbox, 
-            source=source,
-            target_date=target_date_obj
-        )
-        return result
-
-
-    @router.get("/timeseries")
-    def get_ice_timeseries(
-        min_lon: float = Query(..., ge=-180, le=180),
-        min_lat: float = Query(..., ge=-90, le=90),
-        max_lon: float = Query(..., ge=-180, le=180),
-        max_lat: float = Query(..., ge=-90, le=90),
-        start_date: datetime = Query(...),
-        end_date: datetime = Query(...),
-        db: Session = Depends(get_db)
-    ):
-        """Get historical ice concentration time series"""
-        bbox = (min_lon, min_lat, max_lon, max_lat)
-        result = ice_analysis.get_ice_time_series(db, bbox, start_date, end_date)
-        return {
-            "bbox": list(bbox),
-            "data": result
-        }
-
-
-    @router.get("/realtime")
-    def get_realtime_satellite_data(
-        min_lon: float = Query(-180, ge=-180, le=180),
-        min_lat: float = Query(60, ge=-90, le=90),
-        max_lon: float = Query(180, ge=-180, le=180),
-        max_lat: float = Query(90, ge=-90, le=90),
-        date: str = Query(None, description="Date in YYYY-MM-DD format"),
-        source: Optional[str] = Query(None, description="Satellite source (sentinel1, radarsat)"),
-        db: Session = Depends(get_db)
-    ):
-        """
-        Get real-time ice concentration data.
-        Priority:
-        1. Database (Bremen)
-        2. Sentinel-1/2 API (live fetch)
-        3. Fallback (Simulated)
-        """
-        from ..satellite.sentinel import get_sentinel_fetcher
-        
-        bbox_tuple = (min_lon, min_lat, max_lon, max_lat)
-        
-        # Parse date if provided
-        target_date = None
-        if date:
-            try:
-                target_date = datetime.strptime(date, "%Y-%m-%d").date()
-            except ValueError:
-                # If invalid date, ignore or raise error. 
-                # For robustness, we'll log warning and ignore 
-                logger.warning(f"Invalid date format received: {date}")
-
+@router.get("/current", response_model=IceConcentrationResponse)
+def get_current_ice_data(
+    min_lon: float = Query(..., ge=-180, le=180),
+    min_lat: float = Query(..., ge=-90, le=90),
+    max_lon: float = Query(..., ge=-180, le=180),
+    max_lat: float = Query(..., ge=-90, le=90),
+    source: Optional[str] = Query(None, description="Satellite source (sentinel1, radarsat)"),
+    date: Optional[str] = Query(None, description="Target date (YYYY-MM-DD)"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get current ice concentration data for a bounding box
+    Cached for 5 minutes
+    """
+    bbox = (min_lon, min_lat, max_lon, max_lat)
+    
+    # Parse date
+    target_date_obj = None
+    if date:
         try:
-            # If specific source requested, strict fetch
-            if source:
-                logger.info(f"Fetching data strictly for source: {source}")
-                
-                if source == 'sentinel1':
-                    fetcher = get_sentinel_fetcher()
-                    fetcher._authenticate()
-                    return fetcher.fetch_high_res_polygons(bbox_tuple)
-                    
-                elif source == 'radarsat':
-                    from ..config import settings
-                    if not settings.RADARSAT_API_KEY:
-                        # Soft fail if no key, as requested
-                        logger.warning("RadarSAT requested but no API key configured.")
-                        return {
-                            "type": "FeatureCollection",
-                            "features": [],
-                            "metadata": {"warning": "RadarSAT API key not configured"}
-                        }
-                    # Placeholder for actual RadarSAT implementation
-                    # In a real app, we would call the CSA API here
-                    logger.info("Fetching RadarSAT data (Mocking for MVP as API access is limited)")
-                    from ..services.mock_data import generate_mock_ice_data
-                    return generate_mock_ice_data(bbox_tuple, source="radarsat")
-                    
-                else:
-                    # Generic fallback or error
-                    pass
+            target_date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            pass # Use latest if invalid
 
-            # Default Behavior (Auto-Selection)
-            # 1. Check Database for recent data (Bremen)
-            db_data = ice_analysis.get_current_ice_concentration(
-                db, 
-                bbox_tuple, 
-                limit=10000, 
-                target_date=target_date
-            )
+    result = ice_analysis.get_current_ice_concentration(
+        db, 
+        bbox, 
+        source=source,
+        target_date=target_date_obj
+    )
+    return result
+
+
+@router.get("/timeseries")
+def get_ice_timeseries(
+    min_lon: float = Query(..., ge=-180, le=180),
+    min_lat: float = Query(..., ge=-90, le=90),
+    max_lon: float = Query(..., ge=-180, le=180),
+    max_lat: float = Query(..., ge=-90, le=90),
+    start_date: datetime = Query(...),
+    end_date: datetime = Query(...),
+    db: Session = Depends(get_db)
+):
+    """Get historical ice concentration time series"""
+    bbox = (min_lon, min_lat, max_lon, max_lat)
+    result = ice_analysis.get_ice_time_series(db, bbox, start_date, end_date)
+    return {
+        "bbox": list(bbox),
+        "data": result
+    }
+
+
+@router.get("/realtime")
+def get_realtime_satellite_data(
+    min_lon: float = Query(-180, ge=-180, le=180),
+    min_lat: float = Query(60, ge=-90, le=90),
+    max_lon: float = Query(180, ge=-180, le=180),
+    max_lat: float = Query(90, ge=-90, le=90),
+    date: str = Query(None, description="Date in YYYY-MM-DD format"),
+    source: Optional[str] = Query(None, description="Satellite source (sentinel1, radarsat)"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get real-time ice concentration data.
+    Priority:
+    1. Database (Bremen)
+    2. Sentinel-1/2 API (live fetch)
+    3. Fallback (Simulated)
+    """
+    from ..satellite.sentinel import get_sentinel_fetcher
+    
+    bbox_tuple = (min_lon, min_lat, max_lon, max_lat)
+    
+    # Parse date if provided
+    target_date = None
+    if date:
+        try:
+            target_date = datetime.strptime(date, "%Y-%m-%d").date()
+        except ValueError:
+            # If invalid date, ignore or raise error. 
+            # For robustness, we'll log warning and ignore 
+            logger.warning(f"Invalid date format received: {date}")
+
+    try:
+        # If specific source requested, strict fetch
+        if source:
+            logger.info(f"Fetching data strictly for source: {source}")
             
-            if db_data["type"] == "FeatureCollection" and len(db_data["features"]) > 0:
-                logger.info(f"✅ Serving {len(db_data['features'])} features from database.")
-                return db_data
-
-            # 2. Skip NSIDC
-
-            # 3. Fallback to Sentinel (High res)
-            logger.info(f"DB empty, checking Sentinel.")
-            try:
+            if source == 'sentinel1':
                 fetcher = get_sentinel_fetcher()
                 fetcher._authenticate()
-                geojson = fetcher.fetch_high_res_polygons(bbox_tuple)
-                if "error" not in geojson:
-                    return geojson
-            except Exception as e:
-                logger.warning(f"Sentinel fetch failed: {e}")
+                return fetcher.fetch_high_res_polygons(bbox_tuple)
+                
+            elif source == 'radarsat':
+                from ..config import settings
+                if not settings.RADARSAT_API_KEY:
+                    # Soft fail if no key, as requested
+                    logger.warning("RadarSAT requested but no API key configured.")
+                    return {
+                        "type": "FeatureCollection",
+                        "features": [],
+                        "metadata": {"warning": "RadarSAT API key not configured"}
+                    }
+                # Placeholder for actual RadarSAT implementation
+                # In a real app, we would call the CSA API here
+                logger.info("Fetching RadarSAT data (Mocking for MVP as API access is limited)")
+                from ..services.mock_data import generate_mock_ice_data
+                return generate_mock_ice_data(bbox_tuple, source="radarsat")
+                
+            else:
+                # Generic fallback or error
+                pass
+
+        # Default Behavior (Auto-Selection)
+        # 1. Check Database for recent data (Bremen)
+        db_data = ice_analysis.get_current_ice_concentration(
+            db, 
+            bbox_tuple, 
+            limit=10000, 
+            target_date=target_date
+        )
+        
+        if db_data["type"] == "FeatureCollection" and len(db_data["features"]) > 0:
+            logger.info(f"✅ Serving {len(db_data['features'])} features from database.")
+            return db_data
+
+        # 2. Skip NSIDC
+
+        # 3. Fallback to Sentinel (High res)
+        logger.info(f"DB empty, checking Sentinel.")
+        try:
+            fetcher = get_sentinel_fetcher()
+            fetcher._authenticate()
+            geojson = fetcher.fetch_high_res_polygons(bbox_tuple)
+            if "error" not in geojson:
+                return geojson
+        except Exception as e:
+            logger.warning(f"Sentinel fetch failed: {e}")
 
         # 4. Final Fallback
         logger.info("Generating simulated ice data for fallback.")
         return generate_mock_ice_data(bbox_tuple)
-
+    
     except Exception as e:
         logger.error(f"Error fetching satellite data: {e}")
         # Return empty or demo data on error to prevent crash
